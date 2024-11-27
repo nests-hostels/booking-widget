@@ -10,80 +10,147 @@
 </head>
 
 <body>
+    <!-- Contenedor General -->
     <div
-        class="max-w-screen-lg mx-auto bg-white rounded-2xl shadow-lg p-4 flex flex-col sm:flex-row items-center sm:space-x-4 space-y-4 sm:space-y-0 justify-between">
-        <!-- Selección de Propiedad -->
-        <div class="flex items-center space-x-2 w-full sm:w-auto">
-            <span class="text-gray-400 text-lg"><i class="fa-solid fa-location-dot"></i></span>
-            <label for="property" class="sr-only">Destino</label>
-            <select id="property"
-                class="text-gray-700 text-sm placeholder-gray-500 w-full sm:w-auto focus:outline-none">
-                <option disabled selected>¿A dónde quieres ir?</option>
-                <option>Arena Nest</option>
-                <option>Puerto Nest</option>
-                <option>Medano Nest</option>
-                <option>Ashavana Nest</option>
-                <option>Duque Nest</option>
-                <option>Las Eras Nest</option>
-                <option>Cisne Nest</option>
-                <option>Las Palmas Nest</option>
-                <option>Aguere Nest</option>
-            </select>
-        </div>
-        <!-- Separador -->
-        <div class="hidden sm:block border-l border-gray-300 h-6"></div>
-        <!-- Fecha de Llegada -->
-        <div class="flex items-center space-x-2 w-full sm:w-auto relative">
-            <span class="text-gray-400 text-lg"><i class="fa-regular fa-calendar"></i></span>
-            <label for="checkin" class="sr-only">Llegada</label>
-            <input type="text" id="checkin" placeholder="Llegada"
-                class="text-gray-700 text-sm w-full sm:w-16 focus:outline-none" />
-        </div>
-        <!-- Separador -->
-        <div class="hidden sm:block border-l border-gray-300 h-6"></div>
-        <!-- Fecha de Salida -->
-        <div class="flex items-center space-x-2 w-full sm:w-auto relative">
-            <span class="text-gray-400 text-lg"><i class="fa-regular fa-calendar"></i></span>
-            <label for="checkout" class="sr-only">Salida</label>
-            <input type="text" id="checkout" placeholder="Salida"
-                class="text-gray-700 text-sm w-full sm:w-16 focus:outline-none" />
-        </div>
-        <!-- Dropdown para noches seleccionadas y limpiar fechas -->
-        <div id="dropdown-container" class="relative hidden">
-            <button id="dropdown-button"
-                class="flex items-center bg-gray-200 px-4 py-2 rounded-full text-gray-600 text-sm font-bold focus:outline-none">
-                <i class="fas fa-moon mr-2"></i> <!-- Ícono de luna -->
-                <span id="nights-text">0 noches</span>
-                <i class="fas fa-chevron-down ml-2"></i>
-            </button>
-            <div id="dropdown-menu" class="absolute right-0 mt-2 w-40 bg-white rounded-md shadow-lg hidden">
-                <div class="p-4">
-                    <span class="text-gray-500 text-sm">Noches seleccionadas: <span id="nights-count">0</span></span>
+        class="container mx-auto px-4 flex flex-col items-center space-y-8 lg:space-y-0 lg:flex-col lg:justify-between">
+        <!-- Breadcrumb -->
+        <div id="breadcrumb"
+            class="flex items-center justify-between text-xs md:text-sm lg:text-base my-4 w-full max-w-4xl space-x-2 lg:space-x-4">
+            <!-- Paso 1: Selecciona destino -->
+            <div class="flex flex-col items-center text-center flex-1">
+                <span id="step-1"
+                    class="breadcrumb-step flex items-center justify-center w-8 h-8 md:w-10 md:h-10 bg-white text-orange-500 font-semibold rounded-full border-2 border-orange-500 transition-all duration-300 ease-in-out">1</span>
+                <span class="mt-2">Destino</span>
+            </div>
+
+            <!-- Línea de conexión -->
+            <div class="flex-1 flex items-center justify-center">
+                <div
+                    class="breadcrumb-line h-0.5 w-full max-w-[80%] bg-orange-500 transition-all duration-500 ease-in-out">
                 </div>
-                <div class="p-4 border-t border-gray-200">
-                    <button id="clear-dates"
-                        class="text-red-500 text-sm font-bold w-full flex items-center justify-center">
-                        <i class="fas fa-trash mr-2"></i> <!-- Ícono de borrar -->
-                        Limpiar fechas
+            </div>
+
+            <!-- Paso 2: Selecciona fechas -->
+            <div class="flex flex-col items-center text-center flex-1">
+                <span id="step-2"
+                    class="breadcrumb-step flex items-center justify-center w-8 h-8 md:w-10 md:h-10 bg-white text-orange-500 font-semibold rounded-full border-2 border-orange-500 transition-all duration-300 ease-in-out">2</span>
+                <span class="mt-2">Fechas</span>
+            </div>
+
+            <!-- Línea de conexión -->
+            <div class="flex-1 flex items-center justify-center">
+                <div
+                    class="breadcrumb-line h-0.5 w-full max-w-[80%] bg-orange-500 transition-all duration-500 ease-in-out">
+                </div>
+            </div>
+
+            <!-- Paso 3: Selecciona huéspedes -->
+            <div class="flex flex-col items-center text-center flex-1">
+                <span id="step-3"
+                    class="breadcrumb-step flex items-center justify-center w-8 h-8 md:w-10 md:h-10 bg-white text-orange-500 font-semibold rounded-full border-2 border-orange-500 transition-all duration-300 ease-in-out">3</span>
+                <span class="mt-2">Huéspedes</span>
+            </div>
+
+            <!-- Línea de conexión -->
+            <div class="flex-1 flex items-center justify-center">
+                <div
+                    class="breadcrumb-line h-0.5 w-full max-w-[80%] bg-orange-500 transition-all duration-500 ease-in-out">
+                </div>
+            </div>
+
+            <!-- Paso 4: Confirmación de reserva -->
+            <div class="flex flex-col items-center text-center flex-1">
+                <span id="step-4"
+                    class="breadcrumb-step flex items-center justify-center w-8 h-8 md:w-10 md:h-10 bg-white text-orange-500 font-semibold rounded-full border-2 border-orange-500 transition-all duration-300 ease-in-out">4</span>
+                <span class="mt-2">Reservas</span>
+            </div>
+        </div>
+
+        <!-- Widget de Reserva -->
+        <form id="widgetBookingForm"
+            class="max-w-full sm:max-w-fit bg-white rounded-2xl shadow-2xl p-6 flex flex-col sm:flex-row items-center sm:space-x-4 space-y-4 sm:space-y-0 border w-full">
+            <input type="hidden" name="date_format" value="Y-m-d" />
+
+            <!-- Selección de Propiedad -->
+            <div class="flex items-center space-x-2 w-full sm:w-auto">
+                <i class="fas fa-map-marker-alt text-orange-500 text-2xl"></i>
+                <div
+                    class="w-full sm:w-auto bg-white rounded-lg shadow-md px-4 py-2 focus-within:ring-2 focus-within:ring-orange-500">
+                    <label for="property" class="sr-only">Destino</label>
+                    <select name="property_id" id="property"
+                        class="text-gray-400 text-base placeholder-gray-500 w-full bg-white border-none focus:outline-none rounded-md">
+                        <option value="" disabled selected>¿A dónde quieres ir?</option>
+                        <option value="O0NGPQ">Arena Nest</option>
+                        <option value="iOPQ1Z">Puerto Nest</option>
+                        <option value="4VPKYG">Medano Nest</option>
+                        <option value="H3pyFz">Aguere Nest</option>
+                        <option value="R5Sn9T">Duque Nest</option>
+                        <option value="T0aIaL">Cisne Nest</option>
+                        <option value="316443">Los Amigos Nest</option>
+                        <option value="uudLs6">Las Eras Nest</option>
+                        <option value="VKSq5o">Ashavana Nest</option>
+                        <option value="AhkCX3">Las Palmas Nest</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Campo de Fecha de Rango -->
+            <div class="flex items-center space-x-2 w-full sm:w-auto">
+                <i class="fas fa-calendar-alt text-orange-500 text-2xl"></i>
+                <div
+                    class="w-full sm:w-auto bg-white rounded-lg shadow-md px-4 py-2 focus-within:ring-2 focus-within:ring-orange-500">
+                    <label for="datepicker" class="sr-only">Selecciona un rango de fechas</label>
+                    <input type="text" id="datepicker" placeholder="Selecciona fechas"
+                        class="text-gray-500 text-base w-full bg-white border-none focus:outline-none rounded-md transition duration-300 ease-in-out transform focus:scale-105" />
+                </div>
+            </div>
+
+            <!-- Campo de Fecha de Salida (oculto) -->
+            <input type="hidden" name="checkin" id="checkin">
+            <input type="hidden" name="checkout" id="checkout">
+
+            <!-- Cantidad de Noches Seleccionadas -->
+            <div id="nights-container" class="flex items-center space-x-2 w-full sm:w-auto hidden">
+                <i class="fas fa-moon text-gray-400 text-2xl"></i>
+                <span id="nights-text"
+                    class="bg-white shadow-md px-4 py-2 rounded-xl text-orange-600 text-base font-semibold w-full sm:w-auto text-left">
+                    0 noches
+                </span>
+            </div>
+
+            <!-- Selección de Huéspedes -->
+            <div class="flex items-center space-x-2 w-full sm:w-auto">
+                <i class="fas fa-user text-orange-500 text-xl"></i>
+                <label for="guests" class="sr-only">Personas</label>
+                <div
+                    class="flex items-center justify-between bg-white rounded-md shadow-md px-4 py-2 w-full sm:w-auto focus-within:ring-2 focus-within:ring-orange-500">
+                    <button type="button" id="decrement-guests"
+                        class="bg-orange-500 text-white text-lg rounded-full w-8 h-8 flex items-center justify-center hover:bg-orange-600 focus:outline-none transition duration-300 ease-in-out transform hover:scale-110">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                    <input type="number" id="guests" name="guests" min="1" max="10" value="1"
+                        class="text-gray-500 text-lg font-medium w-8 text-center bg-transparent focus:outline-none mx-4"
+                        readonly />
+                    <button type="button" id="increment-guests"
+                        class="bg-orange-500 text-white text-lg rounded-full w-8 h-8 flex items-center justify-center hover:bg-orange-600 focus:outline-none transition duration-300 ease-in-out transform hover:scale-110">
+                        <i class="fas fa-plus"></i>
                     </button>
                 </div>
             </div>
-        </div>
-        <!-- Separador -->
-        <div class="hidden sm:block border-l border-gray-300 h-6"></div>
-        <!-- Selección de Huéspedes -->
-        <div class="flex items-center space-x-2 w-full sm:w-auto">
-            <span class="text-gray-400 text-lg"><i class="fa-solid fa-user"></i></span>
-            <label for="guests" class="sr-only">Personas</label>
-            <input type="number" id="guests" min="1" value="2"
-                class="text-gray-700 text-sm w-full sm:w-10 focus:outline-none" />
-        </div>
-        <!-- Botón de ¡Vamos! con ícono de flecha -->
-        <button type="button" id="submit-button"
-            class="bg-orange-500 text-white text-sm font-bold py-2 px-4 rounded-xl hover:bg-orange-600 w-fit sm:w-auto flex items-center justify-center">
-            ¡Vamos!
-            <i class="fas fa-arrow-right ml-2"></i> <!-- Ícono de flecha -->
-        </button>
+
+            <!-- Botón de ¡Vamos! -->
+            <button type="submit" id="submit-button"
+                class="bg-orange-500 shadow-lg text-white text-base font-bold rounded-xl hover:bg-orange-600 focus:ring-2 focus:ring-orange-500 focus:outline-none flex items-center justify-center w-full sm:w-auto px-6 py-3 mt-4 sm:mt-0 transition duration-300 ease-in-out transform hover:scale-105">
+                ¡Vamos!
+                <i class="fas fa-arrow-right ml-2"></i>
+            </button>
+            <!-- Botón de Limpiar -->
+            <button type="button" id="clear-button"
+                class="bg-red-400 shadow-lg text-white text-base font-bold rounded-xl hover:bg-red-500 focus:ring-2 focus:ring-red-400 focus:outline-none flex items-center justify-center w-full sm:w-auto px-6 py-3 mt-4 sm:mt-0 transition duration-300 ease-in-out transform hover:scale-105">
+                <i class="fas fa-trash-alt mr-2"></i>
+                Limpiar
+            </button>
+        </form>
     </div>
 
 
