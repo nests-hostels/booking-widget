@@ -1,202 +1,192 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const breadcrumb = document.getElementById("breadcrumb");
-    const submitButton = document.getElementById("submit-button");
-    const clearButton = document.getElementById("clear-button");
-    const guestInput = document.getElementById("guests");
-    const incrementButton = document.getElementById("increment-guests");
-    const decrementButton = document.getElementById("decrement-guests");
-    const propertySelect = document.getElementById("property");
-    const datepickerInput = document.getElementById("datepicker");
-    const checkinInput = document.getElementById("checkin");
-    const checkoutInput = document.getElementById("checkout");
-    const nightsText = document.getElementById("nights-text");
-    const nightsContainer = document.getElementById("nights-container");
-
-    let breadcrumbActivated = false;
-    let propertySelected = false;
-    let datesSelected = false;
-    let guestsSelected = false;
-
-    // Inicialización de flatpickr con el campo en modo readonly
-    const datepicker = flatpickr(datepickerInput, {
+    // Referencias a los elementos del DOM
+    const propertyInput = document.getElementById("property");
+    const datepicker = flatpickr("#datepicker", {
         mode: "range",
         altInput: true,
         altFormat: "d M",
         dateFormat: "Y-m-d",
         minDate: "today",
-        onChange: handleDateChange
+        onChange: handleDateSelection
     });
-    datepickerInput.setAttribute("readonly", true); // El calendario está inicialmente inactivo
+    const guestInput = document.getElementById("guests");
+    const incrementButton = document.getElementById("increment-guests");
+    const decrementButton = document.getElementById("decrement-guests");
+    const clearButton = document.getElementById("clear-button");
+    const bookingForm = document.getElementById("widgetBookingForm");
+    const bookingModal = document.getElementById("bookingModal");
+    const bookingIframe = document.getElementById("bookingIframe");
+    const closeModalButton = document.getElementById("closeModalButton");
+    const breadcrumb = document.getElementById("breadcrumb");
+    const breadcrumbSteps = document.querySelectorAll(".breadcrumb-step");
+    const breadcrumbLines = document.querySelectorAll(".breadcrumb-line");
+    const rateCheckMessage = document.getElementById("rateCheckMessage");
+    const loadingIndicator = document.getElementById("loadingIndicator");
 
-    // Configuración inicial de UI
-    initializeUI();
-
-    function initializeUI() {
-        breadcrumb.classList.add("hidden", "opacity-0", "invisible", "-translate-y-2");
-        disableButton(clearButton, false); // El botón limpiar siempre está activo
-        disableInput(guestInput, true);
-    }
-
-    function showBreadcrumb() {
-        if (!breadcrumbActivated) {
-            breadcrumb.classList.remove("hidden", "opacity-0", "invisible", "-translate-y-2");
-            breadcrumbActivated = true;
-        }
-    }
-
-    function handleDateChange(selectedDates) {
-        if (!propertySelected) return;
-
-        if (selectedDates.length === 2) {
-            checkinInput.value = flatpickr.formatDate(selectedDates[0], "Y-m-d");
-            checkoutInput.value = flatpickr.formatDate(selectedDates[1], "Y-m-d");
-
-            const diffInDays = Math.ceil((selectedDates[1] - selectedDates[0]) / (1000 * 3600 * 24));
-            nightsText.textContent = `${diffInDays} noches`;
-            nightsContainer.classList.remove("hidden");
-
-            datesSelected = true;
-            enableGuestSelection(); // Habilitar selección de huéspedes después de elegir fechas
-            updateBreadcrumb(2);
+    // Función genérica para mostrar/ocultar elementos
+    const toggleVisibility = (element, show) => {
+        if (show) {
+            element.classList.remove("hidden", "opacity-0");
+            element.classList.add("opacity-100");
         } else {
-            resetDates();
-            datesSelected = false;
-            updateBreadcrumb(1);
+            element.classList.add("hidden", "opacity-0");
+            element.classList.remove("opacity-100");
         }
+    };
+
+    // Muestra el breadcrumb con animaciones
+    function showBreadcrumb() {
+        toggleVisibility(breadcrumb, true);
+        breadcrumb.classList.remove("-translate-y-2");
+        breadcrumb.classList.add("translate-y-0");
     }
 
-    function handleGuestChange(increment = true) {
-        if (!datesSelected) return;
+    // Oculta el breadcrumb y reinicia su estado
+    function resetBreadcrumb() {
+        breadcrumbSteps.forEach((step) => {
+            step.classList.remove("bg-orange-500", "text-white");
+            step.classList.add("bg-white", "text-orange-500");
+            step.removeAttribute("aria-current");
+        });
 
-        const currentGuests = parseInt(guestInput.value);
-        const maxGuests = parseInt(guestInput.max);
-        const minGuests = parseInt(guestInput.min);
+        breadcrumbLines.forEach((line) => {
+            line.classList.remove("w-full");
+        });
 
-        if (increment && currentGuests < maxGuests) {
-            guestInput.value = currentGuests + 1;
-        } else if (!increment && currentGuests > minGuests) {
-            guestInput.value = currentGuests - 1;
-        }
-        guestsSelected = true;
-        updateBreadcrumb(3);
+        toggleVisibility(breadcrumb, false);
     }
 
-    function resetDates() {
-        checkinInput.value = "";
-        checkoutInput.value = "";
-        nightsText.textContent = "0 noches";
-        nightsContainer.classList.add("hidden");
-        datesSelected = false;
-    }
+    // Marca un paso del breadcrumb como verificado
+    function markBreadcrumbStep(stepIndex) {
+        if (breadcrumbSteps[stepIndex]) {
+            const step = breadcrumbSteps[stepIndex];
+            step.classList.add("bg-orange-500", "text-white");
+            step.classList.remove("bg-white", "text-orange-500");
+            step.setAttribute("aria-current", "step");
 
-    function resetWidget() {
-        // Restablecer todos los campos del formulario
-        propertySelect.value = "";
-        datepicker.clear(); // Limpiar el calendario
-        datepickerInput.setAttribute("readonly", true); // Deshabilitar el datepicker al reiniciar
-        guestInput.value = 1; // Reiniciar el número de huéspedes
-        disableInput(guestInput, true); // Deshabilitar el campo de huéspedes
-        resetDates(); // Restablecer las fechas
-        resetBreadcrumb(); // Restablecer el breadcrumb visualmente
-
-        // Restablecer los estados de activación
-        breadcrumb.classList.add("opacity-0", "invisible", "-translate-y-2");
-        setTimeout(() => breadcrumb.classList.add("hidden"), 1000);
-
-        breadcrumbActivated = false;
-        propertySelected = false;
-        datesSelected = false;
-        guestsSelected = false;
-    }
-
-    function updateBreadcrumb(currentStep) {
-        for (let i = 1; i <= 4; i++) {
-            const stepElement = document.getElementById(`step-${i}`);
-            const lineElement = stepElement.parentElement.nextElementSibling?.querySelector(".breadcrumb-line");
-
-            if (i < currentStep) {
-                stepElement.classList.add("bg-orange-500", "text-white");
-                stepElement.classList.remove("bg-white", "text-orange-500");
-                if (lineElement) lineElement.style.width = "100%";
-            } else if (i === currentStep) {
-                stepElement.classList.add("bg-orange-500", "text-white");
-                stepElement.classList.remove("bg-white", "text-orange-500");
-                if (lineElement) lineElement.style.width = "0";
-            } else {
-                stepElement.classList.add("bg-white", "text-orange-500");
-                stepElement.classList.remove("bg-orange-500", "text-white");
-                if (lineElement) lineElement.style.width = "0";
+            const line = breadcrumbLines[stepIndex];
+            if (line) {
+                line.classList.add("w-full");
             }
         }
     }
 
-    function resetBreadcrumb() {
-        updateBreadcrumb(1);
-    }
+    // Actualiza la cantidad de huéspedes
+    function updateGuestCount(delta) {
+        const minGuests = parseInt(guestInput.min, 10) || 1;
+        const maxGuests = parseInt(guestInput.max, 10) || 10;
+        const currentValue = parseInt(guestInput.value, 10);
 
-    function disableButton(button, disable) {
-        button.disabled = disable;
-    }
-
-    function disableInput(input, disable) {
-        input.disabled = disable;
-    }
-
-    function enableDatepicker() {
-        datepickerInput.removeAttribute("readonly"); // Habilita el datepicker
-    }
-
-    function enableGuestSelection() {
-        disableInput(guestInput, false); // Habilita el campo de huéspedes
-    }
-
-    // Eventos de interacción del usuario
-    propertySelect.addEventListener("change", function () {
-        if (propertySelect.value) {
-            showBreadcrumb();
-            propertySelected = true;
-            enableDatepicker(); // Habilitar el datepicker al seleccionar un destino
-            updateBreadcrumb(1);
-        } else {
-            resetWidget();
+        const newValue = currentValue + delta;
+        if (newValue >= minGuests && newValue <= maxGuests) {
+            guestInput.value = newValue;
+            validateGuestStep();
         }
-    });
+    }
 
-    incrementButton.addEventListener("click", function () {
-        handleGuestChange(true);
-    });
+    // Valida el paso de huéspedes
+    function validateGuestStep() {
+        if (parseInt(guestInput.value, 10) > 0) {
+            markBreadcrumbStep(2);
+        }
+    }
 
-    decrementButton.addEventListener("click", function () {
-        handleGuestChange(false);
-    });
+    // Limpia los campos de fecha
+    function clearDateFields() {
+        document.getElementById("checkin").value = "";
+        document.getElementById("checkout").value = "";
+        document.getElementById("nights-text").textContent = "0 noches";
+        document.getElementById("nights-container").classList.add("hidden");
+    }
 
-    clearButton.addEventListener("click", function () {
-        resetWidget(); // Restablece todo el formulario al hacer clic en "Limpiar"
-    });
+    // Limpia todos los campos y reinicia el formulario
+    function clearForm() {
+        propertyInput.value = "";
+        datepicker.clear();
+        guestInput.value = 1;
+        clearDateFields();
+        resetBreadcrumb();
+    }
 
-    document.getElementById("widgetBookingForm").addEventListener("submit", function (event) {
+    // Maneja la selección de fechas
+    function handleDateSelection(selectedDates) {
+        const checkinInput = document.getElementById("checkin");
+        const checkoutInput = document.getElementById("checkout");
+        const nightsText = document.getElementById("nights-text");
+        const nightsContainer = document.getElementById("nights-container");
+
+        if (selectedDates.length === 2) {
+            const [checkinDate, checkoutDate] = selectedDates;
+
+            checkinInput.value = flatpickr.formatDate(checkinDate, "Y-m-d");
+            checkoutInput.value = flatpickr.formatDate(checkoutDate, "Y-m-d");
+
+            const diffInDays = Math.ceil(
+                (checkoutDate - checkinDate) / (1000 * 3600 * 24)
+            );
+            nightsText.textContent = `${diffInDays} noches`;
+            nightsContainer.classList.remove("hidden");
+            markBreadcrumbStep(1);
+        } else {
+            clearDateFields();
+        }
+    }
+
+    // Maneja el envío del formulario
+    function handleFormSubmit(event) {
         event.preventDefault();
 
-        const property = propertySelect.value;
-        const checkin = checkinInput.value;
-        const checkout = checkoutInput.value;
+        const property = propertyInput.value;
+        const checkin = document.getElementById("checkin").value;
+        const checkout = document.getElementById("checkout").value;
         const guests = guestInput.value;
 
         if (!property || !checkin || !checkout) {
-            alert("Por favor, completa todos los campos de destino, fechas y huéspedes antes de continuar.");
+            alert(
+                "Por favor, completa todos los campos de destino, fechas y huéspedes antes de continuar."
+            );
             return;
         }
 
-        const baseUrl = "https://hotels.cloudbeds.com/reservas/";
-        bookingIframe.src = `${baseUrl}${property}?checkin=${checkin}&checkout=${checkout}&adults=${guests}`;
-        bookingModal.classList.remove("hidden");
+        markBreadcrumbStep(3);
 
-        updateBreadcrumb(4);
+        const baseUrl = "https://hotels.cloudbeds.com/reservas/";
+        const fullUrl = `${baseUrl}${property}?checkin=${checkin}&checkout=${checkout}&adults=${guests}`;
+
+        bookingIframe.src = fullUrl;
+        toggleVisibility(bookingModal, true);
+        showRateCheckMessage();
+    }
+
+    // Muestra el mensaje de Rate Check
+    function showRateCheckMessage() {
+        toggleVisibility(rateCheckMessage, true);
+        setTimeout(() => toggleVisibility(rateCheckMessage, false), 4000);
+    }
+
+    // Cierra el modal y limpia el iframe
+    function closeModal() {
+        toggleVisibility(bookingModal, false);
+        bookingIframe.src = "";
+    }
+
+    // Eventos
+    propertyInput.addEventListener("change", () => {
+        if (propertyInput.value) {
+            showBreadcrumb();
+            markBreadcrumbStep(0);
+        }
     });
 
-    document.getElementById("closeModalButton").addEventListener("click", function () {
-        bookingModal.classList.add("hidden");
-        bookingIframe.src = "";
-        setTimeout(() => breadcrumb.classList.add("hidden"), 1000);
+    incrementButton.addEventListener("click", () => updateGuestCount(1));
+    decrementButton.addEventListener("click", () => updateGuestCount(-1));
+    clearButton.addEventListener("click", clearForm);
+    bookingForm.addEventListener("submit", handleFormSubmit);
+    closeModalButton.addEventListener("click", closeModal);
+
+    datepicker.input.addEventListener("change", function () {
+        if (datepicker.selectedDates.length === 2) {
+            markBreadcrumbStep(1);
+        }
     });
 });
