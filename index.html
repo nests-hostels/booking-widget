@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div
+        class="max-w-screen-lg mx-auto bg-white rounded-2xl shadow-lg p-4 flex flex-col sm:flex-row items-center sm:space-x-4 space-y-4 sm:space-y-0 justify-between">
+        <!-- Selección de Propiedad -->
+        <div class="flex items-center space-x-2 w-full sm:w-auto">
+            <span class="text-gray-400 text-lg"><i class="fa-solid fa-location-dot"></i></span>
+            <label for="property" class="sr-only">Destino</label>
+            <select id="property"
+                class="text-gray-700 text-sm placeholder-gray-500 w-full sm:w-auto focus:outline-none">
+                <option disabled selected>¿A dónde quieres ir?</option>
+                <option>Arena Nest</option>
+                <option>Puerto Nest</option>
+                <option>Medano Nest</option>
+                <option>Ashavana Nest</option>
+                <option>Duque Nest</option>
+                <option>Las Eras Nest</option>
+                <option>Cisne Nest</option>
+                <option>Las Palmas Nest</option>
+                <option>Aguere Nest</option>
+            </select>
+        </div>
+        <!-- Separador -->
+        <div class="hidden sm:block border-l border-gray-300 h-6"></div>
+        <!-- Fecha de Llegada -->
+        <div class="flex items-center space-x-2 w-full sm:w-auto relative">
+            <span class="text-gray-400 text-lg"><i class="fa-regular fa-calendar"></i></span>
+            <label for="checkin" class="sr-only">Llegada</label>
+            <input type="text" id="checkin" placeholder="Llegada"
+                class="text-gray-700 text-sm w-full sm:w-16 focus:outline-none" />
+        </div>
+        <!-- Separador -->
+        <div class="hidden sm:block border-l border-gray-300 h-6"></div>
+        <!-- Fecha de Salida -->
+        <div class="flex items-center space-x-2 w-full sm:w-auto relative">
+            <span class="text-gray-400 text-lg"><i class="fa-regular fa-calendar"></i></span>
+            <label for="checkout" class="sr-only">Salida</label>
+            <input type="text" id="checkout" placeholder="Salida"
+                class="text-gray-700 text-sm w-full sm:w-16 focus:outline-none" />
+        </div>
+        <!-- Dropdown para noches seleccionadas y limpiar fechas -->
+        <div id="dropdown-container" class="relative hidden">
+            <button id="dropdown-button"
+                class="flex items-center bg-gray-200 px-4 py-2 rounded-full text-gray-600 text-sm font-bold focus:outline-none">
+                <i class="fas fa-moon mr-2"></i> <!-- Ícono de luna -->
+                <span id="nights-text">0 noches</span>
+                <i class="fas fa-chevron-down ml-2"></i>
+            </button>
+            <div id="dropdown-menu" class="absolute right-0 mt-2 w-40 bg-white rounded-md shadow-lg hidden">
+                <div class="p-4">
+                    <span class="text-gray-500 text-sm">Noches seleccionadas: <span id="nights-count">0</span></span>
+                </div>
+                <div class="p-4 border-t border-gray-200">
+                    <button id="clear-dates"
+                        class="text-red-500 text-sm font-bold w-full flex items-center justify-center">
+                        <i class="fas fa-trash mr-2"></i> <!-- Ícono de borrar -->
+                        Limpiar fechas
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Separador -->
+        <div class="hidden sm:block border-l border-gray-300 h-6"></div>
+        <!-- Selección de Huéspedes -->
+        <div class="flex items-center space-x-2 w-full sm:w-auto">
+            <span class="text-gray-400 text-lg"><i class="fa-solid fa-user"></i></span>
+            <label for="guests" class="sr-only">Personas</label>
+            <input type="number" id="guests" min="1" value="2"
+                class="text-gray-700 text-sm w-full sm:w-10 focus:outline-none" />
+        </div>
+        <!-- Botón de ¡Vamos! con ícono de flecha -->
+        <button type="button" id="submit-button"
+            class="bg-orange-500 text-white text-sm font-bold py-2 px-4 rounded-xl hover:bg-orange-600 w-fit sm:w-auto flex items-center justify-center">
+            ¡Vamos!
+            <i class="fas fa-arrow-right ml-2"></i> <!-- Ícono de flecha -->
+        </button>
+    </div>
+
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="app.js"></script>
+
+</body>
+
+</html>
