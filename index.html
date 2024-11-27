@@ -11,68 +11,64 @@
 
 <body>
     <!-- Contenedor General -->
-    <div class="container mx-auto px-4 flex flex-col items-center space-y-8 lg:space-y-0 lg:flex-col lg:justify-center">
+    <div class="widget-container container mx-auto p-2 px-4 flex flex-col items-center lg:space-y-0 lg:flex-col lg:justify-center"
+        data-widget-id="widget-1">
 
-        <!-- Breadcrumb -->
-        <div id="breadcrumb"
-            class="flex items-center justify-between space-x-4 w-full max-w-4xl my-4 opacity-0 transform -translate-y-2 transition-opacity transition-transform duration-500 ease-in-out hidden"
-            aria-label="Progreso de reserva">
-            <!-- Paso 1: Selecciona destino -->
-            <div class="flex flex-col items-center flex-1">
-                <span id="step-1"
-                    class="breadcrumb-step flex items-center justify-center w-8 h-8 md:w-10 md:h-10 bg-white text-orange-500 font-semibold rounded-full border-2 border-orange-500 transition-all duration-300 ease-in-out"
-                    aria-label="Paso 1: Seleccionar destino">1</span>
-                <span class="mt-2 text-gray-500">Destinos</span>
+        <!-- Contenedor de Breadcrumb -->
+        <div
+            class="breadcrumb-container hidden flex items-center justify-between w-full mb-8 opacity-0 -translate-y-4 transition-all duration-300 ease-in-out">
+            <div class="breadcrumb-step flex flex-col items-center flex-1" data-step="1">
+                <div
+                    class="circle w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 text-gray-500 font-bold">
+                    1</div>
+                <span class="label text-sm text-gray-700 mt-1">Destino</span>
             </div>
-            <!-- Línea de conexión -->
-            <div class="flex-1 flex items-center justify-center">
-                <div class="breadcrumb-line h-0.5 w-0 bg-orange-500 transition-all duration-500 ease-in-out"></div>
+            <div class="breadcrumb-separator flex-1 text-center text-gray-500 text-lg">&rarr;</div>
+            <div class="breadcrumb-step flex flex-col items-center flex-1" data-step="2">
+                <div
+                    class="circle w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 text-gray-500 font-bold">
+                    2</div>
+                <span class="label text-sm text-gray-500 mt-1">Fechas</span>
             </div>
-            <!-- Paso 2: Selecciona fechas -->
-            <div class="flex flex-col items-center flex-1">
-                <span id="step-2"
-                    class="breadcrumb-step flex items-center justify-center w-8 h-8 md:w-10 md:h-10 bg-white text-orange-500 font-semibold rounded-full border-2 border-orange-500 transition-all duration-300 ease-in-out"
-                    aria-label="Paso 2: Seleccionar fechas">2</span>
-                <span class="mt-2 text-gray-500">Fechas</span>
+            <div class="breadcrumb-separator flex-1 text-center text-gray-500 text-lg">&rarr;</div>
+            <div class="breadcrumb-step flex flex-col items-center flex-1" data-step="3">
+                <div
+                    class="circle w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 text-gray-500 font-bold">
+                    3</div>
+                <span class="label text-sm text-gray-500 mt-1">Huéspedes</span>
             </div>
-            <!-- Línea de conexión -->
-            <div class="flex-1 flex items-center justify-center">
-                <div class="breadcrumb-line h-0.5 w-0 bg-orange-500 transition-all duration-500 ease-in-out"></div>
+            <div class="breadcrumb-separator flex-1 text-center text-gray-500 text-lg">&rarr;</div>
+            <div class="breadcrumb-step flex flex-col items-center flex-1" data-step="4">
+                <div
+                    class="circle w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 text-gray-500 font-bold">
+                    4</div>
+                <span class="label text-sm text-gray-500 mt-1">Confirmar</span>
             </div>
-            <!-- Paso 3: Selecciona huéspedes -->
-            <div class="flex flex-col items-center flex-1">
-                <span id="step-3"
-                    class="breadcrumb-step flex items-center justify-center w-8 h-8 md:w-10 md:h-10 bg-white text-orange-500 font-semibold rounded-full border-2 border-orange-500 transition-all duration-300 ease-in-out"
-                    aria-label="Paso 3: Seleccionar huéspedes">3</span>
-                <span class="mt-2 text-gray-500">Huéspedes</span>
-            </div>
-            <!-- Línea de conexión -->
-            <div class="flex-1 flex items-center justify-center">
-                <div class="breadcrumb-line h-0.5 w-0 bg-orange-500 transition-all duration-500 ease-in-out"></div>
-            </div>
-            <!-- Paso 4: Confirmación de reserva -->
-            <div class="flex flex-col items-center flex-1">
-                <span id="step-4"
-                    class="breadcrumb-step flex items-center justify-center w-8 h-8 md:w-10 md:h-10 bg-white text-orange-500 font-semibold rounded-full border-2 border-orange-500 transition-all duration-300 ease-in-out"
-                    aria-label="Paso 4: Confirmar reserva">4</span>
-                <span class="mt-2 text-gray-500">Reservas</span>
+        </div>
+        <div class="error-popup hidden fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-[200]">
+            <div class="error-message bg-white rounded-lg shadow-lg p-6 text-center space-y-4">
+                <p class="error-text text-red-600 text-lg font-semibold"></p>
+                <button
+                    class="error-close-button bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 focus:outline-none">
+                    Cerrar
+                </button>
             </div>
         </div>
 
         <!-- Widget de Reserva -->
-        <form id="widgetBookingForm"
-            class="max-w-5xl mx-auto bg-white rounded-2xl shadow-2xl p-6 flex flex-col sm:flex-row items-center justify-center sm:space-x-4 space-y-4 sm:space-y-0 border w-full"
+        <form
+            class="widget-form max-w-5xl mx-auto bg-white rounded-2xl shadow-2xl p-6 flex flex-col sm:flex-row items-center justify-center sm:space-x-4 space-y-4 sm:space-y-0 border w-full -translate-y-4 transition-all duration-1000 ease-in-out"
             novalidate>
             <input type="hidden" name="date_format" value="Y-m-d" />
 
             <!-- Selección de Propiedad -->
-            <div class="flex items-center space-x-2 w-full sm:w-auto">
+            <div class="property-select-container flex items-center space-x-2 w-full sm:w-auto">
                 <i class="fas fa-map-marker-alt text-orange-500 text-2xl"></i>
                 <div
                     class="w-full sm:w-auto bg-white rounded-lg shadow-md px-4 py-2 focus-within:ring-2 focus-within:ring-orange-500">
-                    <label for="property" class="sr-only">Destino</label>
-                    <select name="property_id" id="property"
-                        class="text-gray-400 text-base placeholder-gray-500 w-full bg-white border-none focus:outline-none rounded-md"
+                    <label class="sr-only">Destino</label>
+                    <select name="property_id"
+                        class="property-select text-gray-400 text-base placeholder-gray-500 w-full bg-white border-none focus:outline-none rounded-md"
                         aria-label="Selecciona tu destino">
                         <option value="" disabled selected>¿A dónde quieres ir?</option>
                         <option value="O0NGPQ">Arena Nest</option>
@@ -90,47 +86,46 @@
             </div>
 
             <!-- Campo de Fecha de Rango -->
-            <div class="flex items-center space-x-2 w-full sm:w-auto">
+            <div class="date-picker-container flex items-center space-x-2 w-full sm:w-auto">
                 <i class="fas fa-calendar-alt text-orange-500 text-2xl"></i>
                 <div
                     class="w-full sm:w-auto bg-white rounded-lg shadow-md px-4 py-2 focus-within:ring-2 focus-within:ring-orange-500">
-                    <label for="datepicker" class="sr-only">Selecciona un rango de fechas</label>
-                    <input type="text" id="datepicker" placeholder="Selecciona fechas"
-                        class="text-gray-500 text-base w-full bg-white border-none focus:outline-none rounded-md transition duration-300 ease-in-out transform focus:scale-105"
+                    <label class="sr-only">Selecciona un rango de fechas</label>
+                    <input type="text" placeholder="Selecciona fechas"
+                        class="datepicker text-gray-500 text-base w-full bg-white border-none focus:outline-none rounded-md transition duration-300 ease-in-out transform focus:scale-105"
                         aria-label="Selecciona un rango de fechas" />
                 </div>
             </div>
 
-            <!-- Campo de Fecha de Salida (oculto) -->
-            <input type="hidden" name="checkin" id="checkin">
-            <input type="hidden" name="checkout" id="checkout">
+            <!-- Campo de Fecha de Entrada y Salida (oculto) -->
+            <input type="hidden" class="checkin">
+            <input type="hidden" class="checkout">
 
             <!-- Cantidad de Noches Seleccionadas -->
-            <div id="nights-container" class="flex items-center space-x-2 w-full sm:w-auto hidden">
+            <div class="nights-container flex items-center space-x-2 w-full sm:w-auto hidden">
                 <i class="fas fa-moon text-gray-400 text-2xl"></i>
-                <span id="nights-text"
-                    class="bg-white shadow-md px-4 py-2 rounded-xl text-orange-600 text-base font-semibold w-full sm:w-auto text-left whitespace-nowrap"
+                <span
+                    class="nights-text bg-white shadow-md px-4 py-2 rounded-xl text-orange-600 text-base font-semibold w-full sm:w-auto text-left whitespace-nowrap"
                     aria-label="Número de noches">
                     0 noches
                 </span>
             </div>
 
             <!-- Selección de Huéspedes -->
-            <div class="flex items-center space-x-2 w-full sm:w-auto">
+            <div class="guests-container flex items-center space-x-2 w-full sm:w-auto">
                 <i class="fas fa-user text-orange-500 text-xl"></i>
-                <label for="guests" class="sr-only">Personas</label>
                 <div
                     class="flex items-center justify-between bg-white rounded-md shadow-md px-4 py-2 w-full sm:w-auto focus-within:ring-2 focus-within:ring-orange-500">
-                    <button type="button" id="decrement-guests"
-                        class="bg-orange-500 text-white text-lg rounded-full w-8 h-8 flex items-center justify-center hover:bg-orange-600 focus:outline-none transition duration-300 ease-in-out transform hover:scale-110"
+                    <button type="button"
+                        class="decrement-guests bg-orange-500 text-white text-lg rounded-full w-8 h-8 flex items-center justify-center hover:bg-orange-600 focus:outline-none transition duration-300 ease-in-out transform hover:scale-110"
                         aria-label="Disminuir cantidad de huéspedes">
                         <i class="fas fa-minus"></i>
                     </button>
-                    <input type="number" id="guests" name="guests" min="1" max="10" value="1"
-                        class="text-gray-500 text-lg font-medium text-center bg-transparent focus:outline-none mx-4"
+                    <input type="number" name="guests" min="1" max="10" value="1"
+                        class="guests text-gray-500 text-lg font-medium text-center bg-transparent focus:outline-none mx-4"
                         readonly aria-label="Cantidad de huéspedes seleccionada" />
-                    <button type="button" id="increment-guests"
-                        class="bg-orange-500 text-white text-lg rounded-full w-8 h-8 flex items-center justify-center hover:bg-orange-600 focus:outline-none transition duration-300 ease-in-out transform hover:scale-110"
+                    <button type="button"
+                        class="increment-guests bg-orange-500 text-white text-lg rounded-full w-8 h-8 flex items-center justify-center hover:bg-orange-600 focus:outline-none transition duration-300 ease-in-out transform hover:scale-110"
                         aria-label="Aumentar cantidad de huéspedes">
                         <i class="fas fa-plus"></i>
                     </button>
@@ -138,55 +133,232 @@
             </div>
 
             <!-- Botón de ¡Vamos! -->
-            <button type="submit" id="submit-button"
-                class="bg-orange-500 shadow-lg text-white text-base font-bold rounded-xl hover:bg-orange-600 focus:ring-2 focus:ring-orange-500 focus:outline-none flex items-center justify-center w-full sm:w-auto px-6 py-3 mt-4 sm:mt-0 transition duration-300 ease-in-out transform hover:scale-105"
+            <button type="submit"
+                class="submit-button bg-orange-500 shadow-lg text-white text-base font-bold rounded-xl hover:bg-orange-600 focus:ring-2 focus:ring-orange-500 focus:outline-none flex items-center justify-center w-full sm:w-auto px-6 py-3 mt-4 sm:mt-0 transition duration-300 ease-in-out transform hover:scale-105"
                 aria-label="Iniciar reserva">
                 ¡Vamos!
                 <i class="fas fa-arrow-right ml-2"></i>
             </button>
 
             <!-- Botón de Limpiar -->
-            <button type="button" id="clear-button"
-                class="bg-red-400 shadow-lg text-white text-base font-bold rounded-xl hover:bg-red-500 focus:ring-2 focus:ring-red-400 focus:outline-none flex items-center justify-center w-full sm:w-auto px-6 py-3 mt-4 sm:mt-0 transition duration-300 ease-in-out transform hover:scale-105"
+            <button type="button"
+                class="clear-button bg-red-400 shadow-lg text-white text-base font-bold rounded-xl hover:bg-red-500 focus:ring-2 focus:ring-red-400 focus:outline-none flex items-center justify-center w-full sm:w-auto px-6 py-3 mt-4 sm:mt-0 transition duration-300 ease-in-out transform hover:scale-105"
                 aria-label="Limpiar todos los campos">
                 <i class="fas fa-trash-alt mr-2"></i>
                 Limpiar
             </button>
         </form>
     </div>
-
     <!-- Modal de Reserva -->
-    <div id="bookingModal"
-        class="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center hidden z-[150]"
+    <div class="booking-modal fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center hidden z-[150]"
         aria-hidden="true">
         <div
-            class="relative bg-white rounded-lg shadow-lg w-full h-full lg:w-4/5 lg:h-4/5 flex flex-col overflow-y-auto">
+            class="modal-content relative bg-white rounded-lg shadow-lg w-full h-full lg:w-4/5 lg:h-4/5 flex flex-col overflow-y-auto">
+
             <!-- Botón Cerrar -->
-            <button id="closeModalButton"
-                class="absolute top-3 right-3 text-white hover:text-white w-8 h-8 rounded-full text-2xl focus:outline-none bg-red-500 z-50"
+            <button
+                class="close-modal-button absolute top-3 right-3 text-white hover:text-white w-8 h-8 rounded-full text-2xl focus:outline-none bg-red-500 z-50"
                 aria-label="Cerrar modal">
                 <i class="fas fa-times"></i>
             </button>
 
             <!-- Indicador de Carga -->
-            <div id="loadingIndicator"
-                class="absolute inset-0 flex items-center justify-center bg-white bg-opacity-50 hidden z-40">
-                <div class="loader border-t-4 border-orange-500 border-solid rounded-full w-12 h-12 animate-spin"></div>
+            <div
+                class="loading-indicator absolute inset-0 flex items-center justify-center bg-white bg-opacity-50 hidden z-40">
+                <div class="loader border-t-4 border-orange-500 border-solid rounded-full w-16 h-16 animate-spin"></div>
             </div>
 
             <!-- Mensaje de Rate Check -->
-            <div id="rateCheckMessage"
-                class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-orange-500 text-white text-center px-6 py-4 rounded-lg shadow-lg opacity-0 transition-opacity duration-500 flex items-center space-x-3 z-50 w-11/12 sm:w-auto">
+            <div
+                class="rate-check-message absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-orange-500 text-white text-center px-6 py-4 rounded-lg shadow-lg opacity-0 transition-opacity duration-500 flex items-center space-x-3 z-50 w-11/12 sm:w-auto">
                 <i class="fas fa-percentage text-2xl"></i>
                 <span class="text-lg font-semibold">¡Mira el Rate Check para ahorrar en tu reserva!</span>
             </div>
 
             <!-- Contenido del Modal -->
             <div class="flex-1 relative">
-                <iframe id="bookingIframe" src="" class="w-full h-full border-none" tabindex="-1"></iframe>
+                <iframe class="booking-iframe w-full h-full border-none" tabindex="-1"></iframe>
             </div>
         </div>
     </div>
+
+    <!--ACA OTRO WIDGET-->
+    <br>
+
+    <!-- Contenedor General -->
+    <div class="widget-container container mx-auto p-2 px-4 flex flex-col items-center lg:space-y-0 lg:flex-col lg:justify-center"
+        data-widget-id="widget-2">
+
+        <!-- Contenedor de Breadcrumb -->
+        <div
+            class="breadcrumb-container hidden flex items-center justify-between w-full mb-8 opacity-0 -translate-y-4 transition-all duration-300 ease-in-out">
+            <div class="breadcrumb-step flex flex-col items-center flex-1" data-step="1">
+                <div
+                    class="circle w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 text-gray-500 font-bold">
+                    1</div>
+                <span class="label text-sm text-gray-700 mt-1">Destino</span>
+            </div>
+            <div class="breadcrumb-separator flex-1 text-center text-gray-500 text-lg">&rarr;</div>
+            <div class="breadcrumb-step flex flex-col items-center flex-1" data-step="2">
+                <div
+                    class="circle w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 text-gray-500 font-bold">
+                    2</div>
+                <span class="label text-sm text-gray-500 mt-1">Fechas</span>
+            </div>
+            <div class="breadcrumb-separator flex-1 text-center text-gray-500 text-lg">&rarr;</div>
+            <div class="breadcrumb-step flex flex-col items-center flex-1" data-step="3">
+                <div
+                    class="circle w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 text-gray-500 font-bold">
+                    3</div>
+                <span class="label text-sm text-gray-500 mt-1">Huéspedes</span>
+            </div>
+            <div class="breadcrumb-separator flex-1 text-center text-gray-500 text-lg">&rarr;</div>
+            <div class="breadcrumb-step flex flex-col items-center flex-1" data-step="4">
+                <div
+                    class="circle w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 text-gray-500 font-bold">
+                    4</div>
+                <span class="label text-sm text-gray-500 mt-1">Confirmar</span>
+            </div>
+        </div>
+        <div class="error-popup hidden fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-[200]">
+            <div class="error-message bg-white rounded-lg shadow-lg p-6 text-center space-y-4">
+                <p class="error-text text-red-600 text-lg font-semibold"></p>
+                <button
+                    class="error-close-button bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 focus:outline-none">
+                    Cerrar
+                </button>
+            </div>
+        </div>
+
+        <!-- Widget de Reserva -->
+        <form
+            class="widget-form max-w-5xl mx-auto bg-white rounded-2xl shadow-2xl p-6 flex flex-col sm:flex-row items-center justify-center sm:space-x-4 space-y-4 sm:space-y-0 border w-full -translate-y-4 transition-all duration-1000 ease-in-out"
+            novalidate>
+            <input type="hidden" name="date_format" value="Y-m-d" />
+
+            <!-- Selección de Propiedad -->
+            <div class="property-select-container flex items-center space-x-2 w-full sm:w-auto">
+                <i class="fas fa-map-marker-alt text-orange-500 text-2xl"></i>
+                <div
+                    class="w-full sm:w-auto bg-white rounded-lg shadow-md px-4 py-2 focus-within:ring-2 focus-within:ring-orange-500">
+                    <label class="sr-only">Destino</label>
+                    <select name="property_id"
+                        class="property-select text-gray-400 text-base placeholder-gray-500 w-full bg-white border-none focus:outline-none rounded-md"
+                        aria-label="Selecciona tu destino">
+                        <option value="" disabled selected>¿A dónde quieres ir?</option>
+                        <option value="O0NGPQ">Arena Nest</option>
+                        <option value="iOPQ1Z">Puerto Nest</option>
+                        <option value="4VPKYG">Medano Nest</option>
+                        <option value="H3pyFz">Aguere Nest</option>
+                        <option value="R5Sn9T">Duque Nest</option>
+                        <option value="T0aIaL">Cisne Nest</option>
+                        <option value="2syF2Y">Los Amigos Nest</option>
+                        <option value="uudLs6">Las Eras Nest</option>
+                        <option value="VKSq5o">Ashavana Nest</option>
+                        <option value="AhkCX3">Las Palmas Nest</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Campo de Fecha de Rango -->
+            <div class="date-picker-container flex items-center space-x-2 w-full sm:w-auto">
+                <i class="fas fa-calendar-alt text-orange-500 text-2xl"></i>
+                <div
+                    class="w-full sm:w-auto bg-white rounded-lg shadow-md px-4 py-2 focus-within:ring-2 focus-within:ring-orange-500">
+                    <label class="sr-only">Selecciona un rango de fechas</label>
+                    <input type="text" placeholder="Selecciona fechas"
+                        class="datepicker text-gray-500 text-base w-full bg-white border-none focus:outline-none rounded-md transition duration-300 ease-in-out transform focus:scale-105"
+                        aria-label="Selecciona un rango de fechas" />
+                </div>
+            </div>
+
+            <!-- Campo de Fecha de Entrada y Salida (oculto) -->
+            <input type="hidden" class="checkin">
+            <input type="hidden" class="checkout">
+
+            <!-- Cantidad de Noches Seleccionadas -->
+            <div class="nights-container flex items-center space-x-2 w-full sm:w-auto hidden">
+                <i class="fas fa-moon text-gray-400 text-2xl"></i>
+                <span
+                    class="nights-text bg-white shadow-md px-4 py-2 rounded-xl text-orange-600 text-base font-semibold w-full sm:w-auto text-left whitespace-nowrap"
+                    aria-label="Número de noches">
+                    0 noches
+                </span>
+            </div>
+
+            <!-- Selección de Huéspedes -->
+            <div class="guests-container flex items-center space-x-2 w-full sm:w-auto">
+                <i class="fas fa-user text-orange-500 text-xl"></i>
+                <div
+                    class="flex items-center justify-between bg-white rounded-md shadow-md px-4 py-2 w-full sm:w-auto focus-within:ring-2 focus-within:ring-orange-500">
+                    <button type="button"
+                        class="decrement-guests bg-orange-500 text-white text-lg rounded-full w-8 h-8 flex items-center justify-center hover:bg-orange-600 focus:outline-none transition duration-300 ease-in-out transform hover:scale-110"
+                        aria-label="Disminuir cantidad de huéspedes">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                    <input type="number" name="guests" min="1" max="10" value="1"
+                        class="guests text-gray-500 text-lg font-medium text-center bg-transparent focus:outline-none mx-4"
+                        readonly aria-label="Cantidad de huéspedes seleccionada" />
+                    <button type="button"
+                        class="increment-guests bg-orange-500 text-white text-lg rounded-full w-8 h-8 flex items-center justify-center hover:bg-orange-600 focus:outline-none transition duration-300 ease-in-out transform hover:scale-110"
+                        aria-label="Aumentar cantidad de huéspedes">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Botón de ¡Vamos! -->
+            <button type="submit"
+                class="submit-button bg-orange-500 shadow-lg text-white text-base font-bold rounded-xl hover:bg-orange-600 focus:ring-2 focus:ring-orange-500 focus:outline-none flex items-center justify-center w-full sm:w-auto px-6 py-3 mt-4 sm:mt-0 transition duration-300 ease-in-out transform hover:scale-105"
+                aria-label="Iniciar reserva">
+                ¡Vamos!
+                <i class="fas fa-arrow-right ml-2"></i>
+            </button>
+
+            <!-- Botón de Limpiar -->
+            <button type="button"
+                class="clear-button bg-red-400 shadow-lg text-white text-base font-bold rounded-xl hover:bg-red-500 focus:ring-2 focus:ring-red-400 focus:outline-none flex items-center justify-center w-full sm:w-auto px-6 py-3 mt-4 sm:mt-0 transition duration-300 ease-in-out transform hover:scale-105"
+                aria-label="Limpiar todos los campos">
+                <i class="fas fa-trash-alt mr-2"></i>
+                Limpiar
+            </button>
+        </form>
+    </div>
+    <!-- Modal de Reserva -->
+    <div class="booking-modal fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center hidden z-[150]"
+        aria-hidden="true">
+        <div
+            class="modal-content relative bg-white rounded-lg shadow-lg w-full h-full lg:w-4/5 lg:h-4/5 flex flex-col overflow-y-auto">
+
+            <!-- Botón Cerrar -->
+            <button
+                class="close-modal-button absolute top-3 right-3 text-white hover:text-white w-8 h-8 rounded-full text-2xl focus:outline-none bg-red-500 z-50"
+                aria-label="Cerrar modal">
+                <i class="fas fa-times"></i>
+            </button>
+
+            <!-- Indicador de Carga -->
+            <div
+                class="loading-indicator absolute inset-0 flex items-center justify-center bg-white bg-opacity-50 hidden z-40">
+                <div class="loader border-t-4 border-orange-500 border-solid rounded-full w-16 h-16 animate-spin"></div>
+            </div>
+
+            <!-- Mensaje de Rate Check -->
+            <div
+                class="rate-check-message absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-orange-500 text-white text-center px-6 py-4 rounded-lg shadow-lg opacity-0 transition-opacity duration-500 flex items-center space-x-3 z-50 w-11/12 sm:w-auto">
+                <i class="fas fa-percentage text-2xl"></i>
+                <span class="text-lg font-semibold">¡Mira el Rate Check para ahorrar en tu reserva!</span>
+            </div>
+
+            <!-- Contenido del Modal -->
+            <div class="flex-1 relative">
+                <iframe class="booking-iframe w-full h-full border-none" tabindex="-1"></iframe>
+            </div>
+        </div>
+    </div>
+
+
+
 
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">

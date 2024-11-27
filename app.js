@@ -1,192 +1,434 @@
-document.addEventListener("DOMContentLoaded", function () {
-    // Referencias a los elementos del DOM
-    const propertyInput = document.getElementById("property");
-    const datepicker = flatpickr("#datepicker", {
-        mode: "range",
-        altInput: true,
-        altFormat: "d M",
-        dateFormat: "Y-m-d",
-        minDate: "today",
-        onChange: handleDateSelection
-    });
-    const guestInput = document.getElementById("guests");
-    const incrementButton = document.getElementById("increment-guests");
-    const decrementButton = document.getElementById("decrement-guests");
-    const clearButton = document.getElementById("clear-button");
-    const bookingForm = document.getElementById("widgetBookingForm");
-    const bookingModal = document.getElementById("bookingModal");
-    const bookingIframe = document.getElementById("bookingIframe");
-    const closeModalButton = document.getElementById("closeModalButton");
-    const breadcrumb = document.getElementById("breadcrumb");
-    const breadcrumbSteps = document.querySelectorAll(".breadcrumb-step");
-    const breadcrumbLines = document.querySelectorAll(".breadcrumb-line");
-    const rateCheckMessage = document.getElementById("rateCheckMessage");
-    const loadingIndicator = document.getElementById("loadingIndicator");
-
-    // Función genérica para mostrar/ocultar elementos
-    const toggleVisibility = (element, show) => {
-        if (show) {
-            element.classList.remove("hidden", "opacity-0");
-            element.classList.add("opacity-100");
-        } else {
-            element.classList.add("hidden", "opacity-0");
-            element.classList.remove("opacity-100");
+class BookingWidget {
+    constructor(config, widgetId) {
+        this.config = config;
+        this.widgetContainer = document.querySelector(
+            `[data-widget-id="${widgetId}"]`
+        );
+        if (!this.widgetContainer) {
+            console.error(`Widget container con ID ${widgetId} no encontrado.`);
+            return;
         }
-    };
-
-    // Muestra el breadcrumb con animaciones
-    function showBreadcrumb() {
-        toggleVisibility(breadcrumb, true);
-        breadcrumb.classList.remove("-translate-y-2");
-        breadcrumb.classList.add("translate-y-0");
+        this.initElements();
+        this.init();
     }
 
-    // Oculta el breadcrumb y reinicia su estado
-    function resetBreadcrumb() {
-        breadcrumbSteps.forEach((step) => {
-            step.classList.remove("bg-orange-500", "text-white");
-            step.classList.add("bg-white", "text-orange-500");
-            step.removeAttribute("aria-current");
-        });
-
-        breadcrumbLines.forEach((line) => {
-            line.classList.remove("w-full");
-        });
-
-        toggleVisibility(breadcrumb, false);
+    initElements() {
+        try {
+            this.form = this.widgetContainer.querySelector(
+                `.${this.config.formClass}`
+            );
+            this.propertySelect = this.form.querySelector(
+                `.${this.config.propertyClass}`
+            );
+            this.datepicker = this.form.querySelector(
+                `.${this.config.datepickerClass}`
+            );
+            this.checkinInput = this.form.querySelector(
+                `.${this.config.checkinClass}`
+            );
+            this.checkoutInput = this.form.querySelector(
+                `.${this.config.checkoutClass}`
+            );
+            this.guestsInput = this.form.querySelector(`.${this.config.guestsClass}`);
+            this.decrementGuestsButton = this.form.querySelector(
+                `.${this.config.decrementGuestsClass}`
+            );
+            this.incrementGuestsButton = this.form.querySelector(
+                `.${this.config.incrementGuestsClass}`
+            );
+            this.submitButton = this.form.querySelector(
+                `.${this.config.submitButtonClass}`
+            );
+            this.clearButton = this.form.querySelector(
+                `.${this.config.clearButtonClass}`
+            );
+            this.bookingModal = document.querySelector(`.${this.config.modalClass}`);
+            this.closeModalButton = this.bookingModal.querySelector(
+                `.${this.config.closeModalButtonClass}`
+            );
+            this.loadingIndicator = this.bookingModal.querySelector(
+                `.${this.config.loadingIndicatorClass}`
+            );
+            this.rateCheckMessage = this.bookingModal.querySelector(
+                `.${this.config.rateCheckMessageClass}`
+            );
+            this.bookingIframe = this.bookingModal.querySelector(
+                `.${this.config.bookingIframeClass}`
+            );
+            this.breadcrumbContainer = this.widgetContainer.querySelector(
+                `.${this.config.breadcrumbContainerClass}`
+            );
+            this.breadcrumbSteps = this.breadcrumbContainer.querySelectorAll(
+                ".breadcrumb-step"
+            );
+            this.nightsContainer = this.widgetContainer.querySelector(
+                `.${this.config.nightsContainerClass}`
+            );
+            this.nightsText = this.widgetContainer.querySelector(
+                `.${this.config.nightsTextClass}`
+            );
+            this.errorPopup = this.widgetContainer.querySelector(
+                `.${this.config.errorPopupClass}`
+            );
+            this.errorText = this.errorPopup.querySelector(
+                `.${this.config.errorTextClass}`
+            );
+            this.errorCloseButton = this.errorPopup.querySelector(
+                `.${this.config.errorCloseButtonClass}`
+            );
+        } catch (error) {
+            console.error("Error al inicializar elementos:", error);
+        }
     }
 
-    // Marca un paso del breadcrumb como verificado
-    function markBreadcrumbStep(stepIndex) {
-        if (breadcrumbSteps[stepIndex]) {
-            const step = breadcrumbSteps[stepIndex];
-            step.classList.add("bg-orange-500", "text-white");
-            step.classList.remove("bg-white", "text-orange-500");
-            step.setAttribute("aria-current", "step");
+    init() {
+        if (!this.form) {
+            console.error("Formulario no encontrado en el widget.");
+            return;
+        }
+        this.initDatepicker();
+        this.initGuestsButtons();
+        this.initFormSubmission();
+        this.initClearButton();
+        this.initCloseModalButton();
+        this.initBreadcrumb();
+        this.initErrorPopup();
+    }
 
-            const line = breadcrumbLines[stepIndex];
-            if (line) {
-                line.classList.add("w-full");
+    // Métodos de gestión y lógica del widget permanecen iguales
+    // (resetBreadcrumb, showBreadcrumb, hideBreadcrumb, initBreadcrumb, etc.)
+    initErrorPopup() {
+        this.errorCloseButton.addEventListener("click", () => {
+            this.errorPopup.classList.add("hidden");
+        });
+    }
+    showErrorPopup(message) {
+        this.errorText.textContent = message;
+        this.errorPopup.classList.remove("hidden");
+    }
+    resetBreadcrumb() {
+        this.breadcrumbSteps.forEach((stepElement) => {
+            const circle = stepElement.querySelector(".circle");
+            const label = stepElement.querySelector(".label");
+            circle.classList.add("bg-gray-100", "text-gray-500");
+            circle.classList.remove("bg-orange-500", "text-white");
+            label.classList.add("text-gray-500");
+            label.classList.remove("text-orange-500");
+        });
+        this.hideBreadcrumb();
+    }
+
+    showBreadcrumb() {
+        this.breadcrumbContainer.classList.remove("hidden");
+        setTimeout(() => {
+            this.breadcrumbContainer.classList.remove("opacity-0", "-translate-y-4");
+            this.breadcrumbContainer.classList.add("opacity-100", "translate-y-0");
+        }, 100);
+    }
+
+    hideBreadcrumb() {
+        this.breadcrumbContainer.classList.add("opacity-0", "-translate-y-4");
+        this.breadcrumbContainer.classList.remove("opacity-100", "translate-y-0");
+        setTimeout(() => {
+            this.breadcrumbContainer.classList.add("hidden");
+        }, 300);
+    }
+
+    initBreadcrumb() {
+        this.propertySelect.addEventListener("change", () => {
+            if (this.propertySelect.value) {
+                this.showBreadcrumb();
+                this.updateBreadcrumb(1);
+            } else {
+                this.resetBreadcrumb();
             }
+        });
+
+        this.datepicker.addEventListener("change", () => {
+            if (this.propertySelect.value && this.datepicker.value) {
+                this.showBreadcrumb();
+                this.updateBreadcrumb(2);
+                this.updateNights();
+            }
+        });
+
+        this.decrementGuestsButton.addEventListener("click", () => {
+            if (this.propertySelect.value && this.guestsInput.value > 0) {
+                this.showBreadcrumb();
+                this.updateBreadcrumb(3);
+            }
+        });
+
+        this.incrementGuestsButton.addEventListener("click", () => {
+            if (this.propertySelect.value && this.guestsInput.value > 0) {
+                this.showBreadcrumb();
+                this.updateBreadcrumb(3);
+            }
+        });
+
+        this.submitButton.addEventListener("click", (event) => {
+            if (
+                this.propertySelect.value &&
+                this.datepicker.value &&
+                this.guestsInput.value > 0
+            ) {
+                this.showBreadcrumb();
+                this.updateBreadcrumb(4);
+            } else {
+                event.preventDefault();
+                this.showErrorPopup("Por favor, completa todos los campos.");
+            }
+        });
+    }
+
+    updateBreadcrumb(step) {
+        this.breadcrumbSteps.forEach((stepElement) => {
+            const stepNumber = parseInt(stepElement.dataset.step, 10);
+            const circle = stepElement.querySelector(".circle");
+            const label = stepElement.querySelector(".label");
+
+            if (stepNumber < step) {
+                circle.classList.add("bg-orange-500", "text-white");
+                circle.classList.remove("bg-gray-100", "text-gray-500");
+                label.classList.add("text-orange-500");
+                label.classList.remove("text-gray-500");
+            } else if (stepNumber === step) {
+                circle.classList.add("bg-orange-500", "text-white");
+                circle.classList.remove("bg-gray-100", "text-gray-500");
+                label.classList.add("text-orange-500");
+                label.classList.remove("text-gray-500");
+            } else {
+                circle.classList.add("bg-gray-100", "text-gray-500");
+                circle.classList.remove("bg-orange-500", "text-white");
+                label.classList.add("text-gray-500");
+                label.classList.remove("text-orange-500");
+            }
+        });
+    }
+
+    updateNights() {
+        const checkinDate = new Date(this.checkinInput.value);
+        const checkoutDate = new Date(this.checkoutInput.value);
+
+        if (checkinDate && checkoutDate && checkoutDate > checkinDate) {
+            const nights = Math.ceil(
+                (checkoutDate - checkinDate) / (1000 * 60 * 60 * 24)
+            );
+
+            this.nightsContainer.classList.remove(
+                "hidden",
+                "opacity-0",
+                "-translate-y-4"
+            );
+            this.nightsContainer.classList.add("opacity-100", "translate-y-0");
+            this.nightsText.textContent = `${nights} noche${nights > 1 ? "s" : ""}`;
+        } else {
+            this.nightsContainer.classList.add("opacity-0", "-translate-y-4");
+            this.nightsContainer.classList.remove("opacity-100", "translate-y-0");
+            setTimeout(() => {
+                this.nightsContainer.classList.add("hidden");
+            }, 300);
+            this.nightsText.textContent = "0 noches";
         }
     }
 
-    // Actualiza la cantidad de huéspedes
-    function updateGuestCount(delta) {
-        const minGuests = parseInt(guestInput.min, 10) || 1;
-        const maxGuests = parseInt(guestInput.max, 10) || 10;
-        const currentValue = parseInt(guestInput.value, 10);
+    handleCloseModal() {
+        this.hideBreadcrumb();
+        this.bookingModal.classList.add("opacity-0", "scale-95");
+        this.bookingModal.classList.remove("opacity-100", "scale-100");
 
-        const newValue = currentValue + delta;
-        if (newValue >= minGuests && newValue <= maxGuests) {
-            guestInput.value = newValue;
-            validateGuestStep();
+        // Reiniciar el widget al cerrar el modal
+        this.handleClear();
+
+        setTimeout(() => {
+            this.bookingModal.classList.add("hidden");
+            this.bookingIframe.src = "";
+        }, 300);
+    }
+
+    handleClear() {
+        this.form.reset();
+        this.resetBreadcrumb();
+        this.datepickerInstance.clear();
+        this.bookingIframe.src = "";
+
+        this.hideBreadcrumb();
+        this.nightsContainer.classList.add("opacity-0", "-translate-y-4");
+        this.nightsContainer.classList.remove("opacity-100", "translate-y-0");
+        setTimeout(() => {
+            this.nightsContainer.classList.add("hidden");
+        }, 300);
+        this.nightsText.textContent = "0 noches";
+    }
+
+    initDatepicker() {
+        if (!this.datepicker || !this.checkinInput || !this.checkoutInput) {
+            console.error("Elementos del datepicker no encontrados");
+            return;
         }
+        this.datepickerInstance = flatpickr(this.datepicker, {
+            mode: "range",
+            dateFormat: "d-m",
+            onChange: this.handleDateChange.bind(this),
+            locale: {
+                firstDayOfWeek: 1
+            },
+            minDate: "today"
+        });
     }
 
-    // Valida el paso de huéspedes
-    function validateGuestStep() {
-        if (parseInt(guestInput.value, 10) > 0) {
-            markBreadcrumbStep(2);
-        }
-    }
-
-    // Limpia los campos de fecha
-    function clearDateFields() {
-        document.getElementById("checkin").value = "";
-        document.getElementById("checkout").value = "";
-        document.getElementById("nights-text").textContent = "0 noches";
-        document.getElementById("nights-container").classList.add("hidden");
-    }
-
-    // Limpia todos los campos y reinicia el formulario
-    function clearForm() {
-        propertyInput.value = "";
-        datepicker.clear();
-        guestInput.value = 1;
-        clearDateFields();
-        resetBreadcrumb();
-    }
-
-    // Maneja la selección de fechas
-    function handleDateSelection(selectedDates) {
-        const checkinInput = document.getElementById("checkin");
-        const checkoutInput = document.getElementById("checkout");
-        const nightsText = document.getElementById("nights-text");
-        const nightsContainer = document.getElementById("nights-container");
-
+    handleDateChange(selectedDates) {
         if (selectedDates.length === 2) {
             const [checkinDate, checkoutDate] = selectedDates;
-
-            checkinInput.value = flatpickr.formatDate(checkinDate, "Y-m-d");
-            checkoutInput.value = flatpickr.formatDate(checkoutDate, "Y-m-d");
-
-            const diffInDays = Math.ceil(
-                (checkoutDate - checkinDate) / (1000 * 3600 * 24)
-            );
-            nightsText.textContent = `${diffInDays} noches`;
-            nightsContainer.classList.remove("hidden");
-            markBreadcrumbStep(1);
+            this.checkinInput.value = this.formatDate(checkinDate);
+            this.checkoutInput.value = this.formatDate(checkoutDate);
+            this.updateNights();
         } else {
-            clearDateFields();
+            this.checkinInput.value = "";
+            this.checkoutInput.value = "";
+            this.updateNights();
         }
     }
 
-    // Maneja el envío del formulario
-    function handleFormSubmit(event) {
+    formatDate(date) {
+        const offset = date.getTimezoneOffset();
+        date = new Date(date.getTime() - offset * 60 * 1000);
+        return date.toISOString().split("T")[0];
+    }
+
+    initGuestsButtons() {
+        if (
+            !this.decrementGuestsButton ||
+            !this.incrementGuestsButton ||
+            !this.guestsInput
+        ) {
+            console.error("Botones o input de huéspedes no encontrados");
+            return;
+        }
+        this.decrementGuestsButton.addEventListener(
+            "click",
+            this.decrementGuests.bind(this)
+        );
+        this.incrementGuestsButton.addEventListener(
+            "click",
+            this.incrementGuests.bind(this)
+        );
+    }
+
+    decrementGuests() {
+        const currentValue = parseInt(this.guestsInput.value, 10);
+        if (currentValue > 1) {
+            this.guestsInput.value = currentValue - 1;
+        }
+    }
+
+    incrementGuests() {
+        const currentValue = parseInt(this.guestsInput.value, 10);
+        if (currentValue < 10) {
+            this.guestsInput.value = currentValue + 1;
+        }
+    }
+
+    initFormSubmission() {
+        this.form.addEventListener("submit", this.handleSubmit.bind(this));
+    }
+
+    handleSubmit(event) {
         event.preventDefault();
 
-        const property = propertyInput.value;
-        const checkin = document.getElementById("checkin").value;
-        const checkout = document.getElementById("checkout").value;
-        const guests = guestInput.value;
+        const propertyId = this.propertySelect.value;
+        const checkinDate = this.checkinInput.value;
+        const checkoutDate = this.checkoutInput.value;
+        const guests = this.guestsInput.value;
 
-        if (!property || !checkin || !checkout) {
-            alert(
-                "Por favor, completa todos los campos de destino, fechas y huéspedes antes de continuar."
-            );
+        if (!propertyId || !checkinDate || !checkoutDate || !guests) {
+            this.showErrorPopup("Por favor, completa todos los campos.");
             return;
         }
 
-        markBreadcrumbStep(3);
+        const cloudbedsUrl = `https://hotels.cloudbeds.com/reservas/${propertyId}?checkin=${checkinDate}&checkout=${checkoutDate}&adults=${guests}`;
 
-        const baseUrl = "https://hotels.cloudbeds.com/reservas/";
-        const fullUrl = `${baseUrl}${property}?checkin=${checkin}&checkout=${checkout}&adults=${guests}`;
+        this.bookingModal.classList.remove("hidden", "opacity-0", "scale-95");
+        this.bookingModal.classList.add("opacity-100", "scale-100");
+        this.loadingIndicator.classList.remove("hidden");
 
-        bookingIframe.src = fullUrl;
-        toggleVisibility(bookingModal, true);
-        showRateCheckMessage();
+        setTimeout(() => {
+            this.loadingIndicator.classList.add("hidden");
+            this.bookingIframe.src = cloudbedsUrl;
+
+            this.rateCheckMessage.classList.remove("opacity-0");
+            setTimeout(() => {
+                this.rateCheckMessage.classList.add("opacity-0");
+            }, 4000);
+        }, 2000);
     }
 
-    // Muestra el mensaje de Rate Check
-    function showRateCheckMessage() {
-        toggleVisibility(rateCheckMessage, true);
-        setTimeout(() => toggleVisibility(rateCheckMessage, false), 4000);
-    }
+    showErrorPopup(message) {
+        // Usar las clases configuradas para seleccionar los elementos
+        const errorPopup = document.querySelector(
+            `.${this.config.errorPopupClass}`
+        );
+        const errorPopupMessage = errorPopup.querySelector(
+            `.${this.config.errorTextClass}`
+        );
+        const errorPopupClose = errorPopup.querySelector(
+            `.${this.config.errorCloseButtonClass}`
+        );
 
-    // Cierra el modal y limpia el iframe
-    function closeModal() {
-        toggleVisibility(bookingModal, false);
-        bookingIframe.src = "";
-    }
-
-    // Eventos
-    propertyInput.addEventListener("change", () => {
-        if (propertyInput.value) {
-            showBreadcrumb();
-            markBreadcrumbStep(0);
+        if (!errorPopup || !errorPopupMessage || !errorPopupClose) {
+            console.error("Error popup elements are missing in the DOM");
+            return;
         }
-    });
 
-    incrementButton.addEventListener("click", () => updateGuestCount(1));
-    decrementButton.addEventListener("click", () => updateGuestCount(-1));
-    clearButton.addEventListener("click", clearForm);
-    bookingForm.addEventListener("submit", handleFormSubmit);
-    closeModalButton.addEventListener("click", closeModal);
+        // Actualizar el mensaje de error y mostrar el popup
+        errorPopupMessage.textContent = message;
+        errorPopup.classList.remove("hidden");
 
-    datepicker.input.addEventListener("change", function () {
-        if (datepicker.selectedDates.length === 2) {
-            markBreadcrumbStep(1);
-        }
-    });
+        // Agregar evento para cerrar el popup
+        errorPopupClose.addEventListener("click", () => {
+            errorPopup.classList.add("hidden");
+        });
+    }
+
+    initClearButton() {
+        this.clearButton.addEventListener("click", this.handleClear.bind(this));
+    }
+
+    initCloseModalButton() {
+        this.closeModalButton.addEventListener(
+            "click",
+            this.handleCloseModal.bind(this)
+        );
+    }
+}
+
+// Configuración del widget
+const widgetConfig = {
+    formClass: "widget-form",
+    propertyClass: "property-select",
+    datepickerClass: "datepicker",
+    checkinClass: "checkin",
+    checkoutClass: "checkout",
+    guestsClass: "guests",
+    decrementGuestsClass: "decrement-guests",
+    incrementGuestsClass: "increment-guests",
+    submitButtonClass: "submit-button",
+    clearButtonClass: "clear-button",
+    modalClass: "booking-modal",
+    closeModalButtonClass: "close-modal-button",
+    loadingIndicatorClass: "loading-indicator",
+    rateCheckMessageClass: "rate-check-message",
+    bookingIframeClass: "booking-iframe",
+    breadcrumbContainerClass: "breadcrumb-container",
+    nightsContainerClass: "nights-container",
+    nightsTextClass: "nights-text",
+    errorPopupClass: "error-popup",
+    errorTextClass: "error-text",
+    errorCloseButtonClass: "error-close-button"
+};
+
+// Inicialización de widgets
+document.addEventListener("DOMContentLoaded", () => {
+    new BookingWidget(widgetConfig, "widget-1");
+    new BookingWidget(widgetConfig, "widget-2");
 });
