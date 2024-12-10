@@ -1,11 +1,9 @@
 class BookingWidget {
-    constructor(config, widgetId) {
+    constructor(config, widget) {
         this.config = config;
-        this.widgetContainer = document.querySelector(
-            `[data-widget-id="${widgetId}"]`
-        );
+        this.widgetContainer = widget;
         if (!this.widgetContainer) {
-            console.error(`Widget container con ID ${widgetId} no encontrado.`);
+            console.error(`Booking Widget container no encontrado.`);
             return;
         }
         this.initElements();
@@ -102,10 +100,12 @@ class BookingWidget {
             this.errorPopup.classList.add("hidden");
         });
     }
-    showErrorPopup(message) {
+
+    /*showErrorPopup(message) {
         this.errorText.textContent = message;
         this.errorPopup.classList.remove("hidden");
-    }
+    }*/
+
     resetBreadcrumb() {
         this.breadcrumbSteps.forEach((stepElement) => {
             const circle = stepElement.querySelector(".circle");
@@ -191,16 +191,16 @@ class BookingWidget {
                 circle.classList.add("bg-orange-500", "text-white");
                 circle.classList.remove("bg-gray-100", "text-gray-500");
                 label.classList.add("text-orange-500");
-                label.classList.remove("text-gray-500");
+                label.classList.remove("text-gray-300");
             } else if (stepNumber === step) {
                 circle.classList.add("bg-orange-500", "text-white");
                 circle.classList.remove("bg-gray-100", "text-gray-500");
                 label.classList.add("text-orange-500");
-                label.classList.remove("text-gray-500");
+                label.classList.remove("text-gray-300");
             } else {
                 circle.classList.add("bg-gray-100", "text-gray-500");
                 circle.classList.remove("bg-orange-500", "text-white");
-                label.classList.add("text-gray-500");
+                label.classList.add("text-gray-300");
                 label.classList.remove("text-orange-500");
             }
         });
@@ -429,6 +429,21 @@ const widgetConfig = {
 
 // Inicialización de widgets
 document.addEventListener("DOMContentLoaded", () => {
-    new BookingWidget(widgetConfig, "widget-1");
+    const widgets = document.querySelectorAll('.widget-container');
+
+    widgets.forEach(widget => {
+        // console.log(widget)
+        new BookingWidget(widgetConfig, widget);
+    })
+    /*new BookingWidget(widgetConfig, "widget-1");
     new BookingWidget(widgetConfig, "widget-2");
+
+    if (document.querySelector('[data-widget-id="3"]')) {
+        console.log(`widget-3`)
+        new BookingWidget(widgetConfig, "widget-3");
+    }
+    if (document.querySelector('[data-widget-id="111"]')) {
+        console.log(`widget-111`);
+        new BookingWidget(widgetConfig, "widget-111");
+    }*/
 });
